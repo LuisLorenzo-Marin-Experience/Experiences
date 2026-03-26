@@ -1,0 +1,121 @@
+Performance Optimization of a Customer Data Platform on Azure
+
+Realistic, enterprise-grade Azure architecture + budget scenario
+
+Monthly Budget: $5,000 USD on Azure
+
+Platform: Microsoft Azure
+Requirements Covered
+Azure SQL Managed Instance (DW / OLTP)
+Storage (backups, staging)
+Web Applications
+Virtual Machines
+Data ingestion from Salesforce
+Data pipelines
+Analytics (Databricks)
+CI/CD (DevOps)
+
+Architecture Strategy (Important)
+
+Priorities:
+PaaS-first approach (reduce admin cost)
+Cost-controlled analytics
+Batch processing over real-time (cheaper)
+Right-sized compute
+
+Budget Allocation 
+Category            Service	Budget	              %
+Databases	          Azure SQL Managed Instance	$1,700	34%
+Data Integration	  Azure Data Factory          	$500	10%
+Analytics	          Azure Databricks            	$800	16%
+Web Apps	          App Service	                  $700	14%
+Storage	            Blob Storage	                $500	10%
+VMs	                Compute workloads	            $500	10%
+DevOps & Monitoring	DevOps + Logs	                $300	6%
+                                       Total		$5,000	100%
+
+1. Databases ($1,700)
+
+Use: Azure SQL Managed Instance
+Setup: 1 Primary MI (General Purpose)
+Hosts:
+Data Warehouse (DW)
+Operational DB
+Why:
+Full SQL Server compatibility
+Supports ETL + analytics workloads
+
+2. Data Integration ($500)
+
+Use: Azure Data Factory
+Pipeline Flow: Salesforce → Staging → SQL MI
+Cost Control: Use trigger-based pipelines (not continuous)
+Optimize activity runs
+
+Salesforce Integration
+Use ADF connectors
+Incremental loads (very important)
+Avoid full loads → saves cost + time
+
+3. Analytics ($800)
+
+Use: Azure Databricks
+Strategy: Use job clusters (not always-on clusters)
+Start → process → terminate
+Pay only for usage
+
+4. Web Applications ($700)
+
+Use: Azure App Service
+Setup:
+1 Production App
+1 Staging App
+Features:
+Auto-scaling
+Deployment slots
+
+5. Storage ($500)
+
+Use: Azure Blob Storage
+Use Cases: Staging data from ADF
+Backups
+Logs
+Optimization:
+Hot → active
+Cool → backups
+
+6. Virtual Machines ($500)
+
+Use: Azure Virtual Machines
+Use Cases: Lightweight processing
+Admin tools
+Integration jobs (if needed)
+Optimization:
+B-series VMs
+Auto-shutdown for non-prod
+
+7. DevOps & Monitoring ($300)
+
+Use: Azure DevOps
+Azure Monitor
+Covers:
+Pipelines (CI/CD)
+Logs & alerts
+Basic observability
+
+Cost Optimization Strategy (CRITICAL)
+1. Databricks
+Use job clusters only
+Avoid idle clusters
+2. Data Factory
+Schedule pipelines (batch)
+Use incremental loads
+3. SQL Managed Instance
+Choose General Purpose tier
+Avoid overprovisioning vCores
+4. Storage Tiering
+Move old data → Cool/Archive
+5. Dev/Test Optimization
+Stop VMs after hours
+Use lower tiers for staging
+
