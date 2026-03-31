@@ -1,11 +1,10 @@
 Performance Optimization of a Customer Data Platform on Azure
 
-Realistic, enterprise-grade Azure architecture + budget scenario
-
+How much money can this infra cost me?
+Cost centric ideas for realistic, enterprise-grade Azure architecture
 Monthly Budget: $5,000 USD on Azure
 
-Platform: Microsoft Azure
-Requirements Covered
+Requirements
 Azure SQL Managed Instance (DW / OLTP)
 Storage (backups, staging)
 Web Applications
@@ -15,7 +14,7 @@ Data pipelines
 Analytics (Databricks)
 CI/CD (DevOps)
 
-Architecture Strategy (Important)
+Architecture Strategy 
 
 Priorities:
 PaaS-first approach (reduce admin cost)
@@ -103,19 +102,11 @@ Pipelines (CI/CD)
 Logs & alerts
 Basic observability
 
-Cost Optimization Strategy (CRITICAL)
-1. Databricks
-Use job clusters only
-Avoid idle clusters
-2. Data Factory
-Schedule pipelines (batch)
-Use incremental loads
-3. SQL Managed Instance
-Choose General Purpose tier
-Avoid overprovisioning vCores
-4. Storage Tiering
-Move old data → Cool/Archive
-5. Dev/Test Optimization
-Stop VMs after hours
-Use lower tiers for staging
+Cost Optimization Strategy
+
+1. Databricks: Use job clusters only. Avoid idle clusters
+2. Data Factory: Schedule pipelines (batch).Use incremental loads
+3. SQL Managed Instance: Choose General Purpose tier. Avoid overprovisioning vCores
+4. Storage Tiering: Move old data → Cool/Archive
+5. Dev/Test Optimization: Stop VMs after hour. Use lower tiers for staging
 
