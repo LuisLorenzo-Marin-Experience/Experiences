@@ -1,0 +1,54 @@
+Cross-Region Disaster Recovery for Mission-Critical SQL Server
+
+Redundant database architecture for a mission-critical SQL Server environment. 
+The solution provides local High Availability (HA) through Multi-AZ deployment and a secondary layer of Disaster Recovery (DR) via cross-region asynchronous replication using AWS DMS.
+
+Multi-Region Disaster Recovery (DR) and High Availability (HA).
+Assumptions: SQL Server Standard Edition (License Included), db.m5.large (2 vCPU, 8GB RAM), 200GB GP3 Storage.
+
+Monthly Budget: 1321 USD on AWS 
+
+Architecture Strategy
+
+Primary Layer (Local HA): AWS RDS for SQL Server in Multi-AZ configuration. This handles synchronous replication across two Availability Zones in the primary region to protect
+against data center failure.
+Secondary Layer (Regional DR): AWS DMS configured for Continuous Data Capture (CDC).
+This performs asynchronous replication to a target RDS instance in a completely different AWS Region (e.g., US-East-1 to US-West-2) to protect against a full regional outage.
+
+Budget Allocation
+
+Component        Service Details Estimated      Monthly Cost
+Primary Region   RDS SQL Server (Multi-AZ)        $720.00
+DR Region        RDS SQL Server (Single-AZ)       $360.00
+Replication      AWS DMS Instance (dms.r5.large)  $185.00
+Storage          400GB Total GP3 (Primary + DR)    $46.00
+Data Transfer    Cross-Region (approx. 500GB/mo)   $10.00
+TOTAL                                             $1,321.00 
+
+Cost Optimization strategy
+
+The "SQL Server Tax" (Licensing)
+In AWS, "License Included" pricing for SQL Server is roughly 4–5x more expensive than open-source engines like PostgreSQL.
+Multi-AZ effectively doubles your instance cost because AWS maintains a standby instance for you.
+AWS DMS Instance: For a production SQL Server environment, a T3 instance might suffer from "CPU Credit" exhaustion during heavy replication. I recommend an R5 or R6i instance for stable memory 
+handling of the transaction logs. Cost: ~$0.25/hour for an r5.large.
+Networking:Inbound to AWS: Free.
+Cross-Region Transfer: AWS charges ~$0.02 per GB for data moving from one region to another.
+
+Technical Implementation 
+
+Source Configuration: Enabled MS-CDC (Change Data Capture) on the primary Multi-AZ instance.
+DMS Instance: Provisioned a Replication Instance in the source region.
+Endpoint Security: Configured VPC Peering or AWS Transit Gateway to allow secure, low-latency traffic between the two regions.
+Task Optimization: * Set up a Full Load + Ongoing Replication task.
+Tuned the MinTransactionSize to balance latency vs. throughput.
+Handled SQL Server-specific metadata (Users, Logins, and Jobs) which DMS doesn't replicate automatically.
+
+Visual Component  
+ 
+Region A: RDS SQL Server (Primary) ↔ RDS SQL Server (Standby) via Multi-AZ.
+The Bridge: AWS DMS Replication Instance using a Cross-Region VPC connection.
+Region B: RDS SQL Server (DR Target).
+
+
+
